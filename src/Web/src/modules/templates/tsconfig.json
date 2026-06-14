@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "../../../dist/out-tsc/modules/templates",
+    "tsBuildInfoFile": "../../../node_modules/.tmp/tsconfig.modules.templates.tsbuildinfo"
+  },
+  "include": ["**/*.ts", "**/*.vue"],
+  "exclude": ["__tests__"],
+  "references": [
+    { "path": "../../shared/ui" },
+    { "path": "../../shared/lib" },
+    { "path": "../../shared/api" }
+  ]
+}

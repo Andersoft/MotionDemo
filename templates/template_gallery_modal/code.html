@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#5e6572",
+                    "outline": "#76777d",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#261906",
+                    "tertiary": "#000000",
+                    "secondary-container": "#dce2f3",
+                    "surface-bright": "#f8f9fb",
+                    "on-primary-fixed-variant": "#404758",
+                    "tertiary-fixed": "#f9debf",
+                    "on-tertiary-container": "#968065",
+                    "primary-fixed-dim": "#c0c6db",
+                    "on-primary-fixed": "#141b2b",
+                    "primary": "#000000",
+                    "on-primary-container": "#7d8497",
+                    "tertiary-container": "#261906",
+                    "outline-variant": "#c6c6cd",
+                    "surface-variant": "#e1e2e4",
+                    "secondary-fixed": "#dce2f3",
+                    "on-secondary-fixed-variant": "#404754",
+                    "inverse-on-surface": "#f0f1f3",
+                    "surface": "#f8f9fb",
+                    "secondary": "#585f6c",
+                    "surface-container-low": "#f3f4f6",
+                    "on-tertiary-fixed-variant": "#55442d",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "on-secondary-fixed": "#151c27",
+                    "surface-tint": "#575e70",
+                    "surface-dim": "#d9dadc",
+                    "secondary-fixed-dim": "#c0c7d6",
+                    "surface-container-high": "#e7e8ea",
+                    "tertiary-fixed-dim": "#dcc2a4",
+                    "surface-container": "#edeef0",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#c0c6db",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#141b2b",
+                    "background": "#f8f9fb",
+                    "surface-container-highest": "#e1e2e4",
+                    "inverse-surface": "#2e3132",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#45464c",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#dce2f7",
+                    "on-surface": "#191c1e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "xl": "40px",
+                    "gutter": "24px",
+                    "margin": "32px",
+                    "lg": "24px",
+                    "max_width": "1280px",
+                    "2xl": "64px",
+                    "xs": "4px",
+                    "unit": "4px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Geist"],
+                    "headline-md": ["Geist"],
+                    "button": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "body-sm": ["Geist"],
+                    "body-lg": ["Geist"],
+                    "display": ["Geist"],
+                    "label-mono": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "1.4", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "button": ["14px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                    "label-mono": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 20px;
+        }
+        .modal-overlay {
+            backdrop-filter: blur(8px);
+            background-color: rgba(248, 249, 251, 0.6);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg text-body-lg min-h-screen overflow-hidden">
+<!-- Main Workspace Background (Static Shell) -->
+<div class="flex h-screen w-full blur-[2px] pointer-events-none select-none">
+<!-- SideNavBar -->
+<aside class="flex flex-col h-full py-lg bg-surface-container-low dark:bg-surface-container-low h-screen w-64 border-r border-outline-variant">
+<div class="px-gutter mb-xl">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface">Motion</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Open Source</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center text-primary font-bold border-l-2 border-primary pl-3 py-2 cursor-pointer transition-all duration-200 hover:bg-surface-container-high">
+<span class="material-symbols-outlined mr-3">grid_view</span>
+<span class="font-body-lg text-body-lg">Workspaces</span>
+</div>
+<div class="flex items-center text-on-surface-variant pl-4 py-2 cursor-pointer transition-all duration-200 hover:bg-surface-container-high">
+<span class="material-symbols-outlined mr-3">lock</span>
+<span class="font-body-lg text-body-lg">Private</span>
+</div>
+<div class="flex items-center text-on-surface-variant pl-4 py-2 cursor-pointer transition-all duration-200 hover:bg-surface-container-high">
+<span class="material-symbols-outlined mr-3">star</span>
+<span class="font-body-lg text-body-lg">Favorites</span>
+</div>
+<div class="flex items-center text-on-surface-variant pl-4 py-2 cursor-pointer transition-all duration-200 hover:bg-surface-container-high">
+<span class="material-symbols-outlined mr-3">delete</span>
+<span class="font-body-lg text-body-lg">Trash</span>
+</div>
+</nav>
+<div class="px-gutter mt-auto">
+<button class="w-full py-sm px-md bg-primary text-on-primary font-button text-button rounded-lg transition-transform active:scale-95">
+                    New Page
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-gutter h-14 w-full bg-surface dark:bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-semibold text-on-surface">Workspace Editor</span>
+<div class="bg-surface-container h-8 w-64 rounded px-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">search</span>
+<span class="text-body-sm text-outline">Search...</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">share</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">history</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+<div class="h-8 w-8 rounded-full bg-secondary-container"></div>
+</div>
+</header>
+<main class="p-xl flex-1 bg-surface-container-lowest">
+<div class="max-w-4xl mx-auto space-y-lg">
+<div class="h-8 bg-surface-container-high w-3/4 rounded-sm"></div>
+<div class="space-y-sm">
+<div class="h-4 bg-surface-container-low w-full rounded-sm"></div>
+<div class="h-4 bg-surface-container-low w-full rounded-sm"></div>
+<div class="h-4 bg-surface-container-low w-2/3 rounded-sm"></div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- Template Gallery Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-gutter modal-overlay" id="modal-container">
+<!-- Modal Container -->
+<div class="bg-surface-container-lowest w-full max-w-[1000px] max-h-[921px] flex flex-col border border-outline-variant rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+<!-- Modal Header -->
+<div class="px-xl pt-xl pb-lg flex justify-between items-start border-b border-outline-variant/30">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Template Gallery</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Jumpstart your workspace with precision-engineered open-source templates.</p>
+</div>
+<button class="p-sm hover:bg-surface-container transition-colors rounded-lg group" onclick="document.getElementById('modal-container').classList.add('hidden')">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">close</span>
+</button>
+</div>
+<!-- Modal Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-xl hide-scrollbar">
+<!-- Template Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-xl">
+<!-- Template Card 1 -->
+<div class="group flex flex-col border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="aspect-video bg-surface-container-low relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A clean, high-contrast dashboard layout with white background and black accents, showing project management charts and minimalist data visualizations in a clinical, Swiss-style aesthetic. The lighting is bright and uniform, emphasizing a hyper-organized digital environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-OBHBhGFAucKbeuUn_kjD2EGtmma-kYmmA8BEiFVxUsu_Mf8n0989ZobZ-nJ_Pjx5b_ZSbxSrQ_xM2QJ5PJ9AKqe_SaYJO9dmdtTU40-_L-fd04fcK_KusKJ2T6vDf7xDg3Fg9iD53-sc5h0QWCBnBAwC4yncwau5N_RemaUoolcH7Z67MrWYxMB4508TYD7gfaM_g8J8aqtOKdff3iiTm4uLFEaEywgQRMVn4xo9r3aslvwdDsE-6w"/>
+</div>
+<div class="p-lg flex flex-col flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px;">terminal</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">ENGINEERING</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Software Sprint</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1 mb-xl">Standardized Agile methodology for high-velocity software development teams.</p>
+<button class="w-full py-sm border border-primary text-primary font-button text-button hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+                                Use this template
+                            </button>
+</div>
+</div>
+<!-- Template Card 2 -->
+<div class="group flex flex-col border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="aspect-video bg-surface-container-low relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A minimalist architectural studio workspace with a single open book and a black pen on a white desk. The image captures a serene and focused mood with clean lines, soft natural daylight, and a monochromatic color palette of whites and grays, echoing a personal wiki structure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVJIZGcnBmHrVzmAj-b887teaqwFxlJ9LA6GfDeV58t1_64wDVzLeloNKwsGvuXDy3m8MIhGFeKDLC-U02R2I2TqyRl7cFSbwsr13xlw6yGQRVBC3wxOl9my0Zo64QmjUOHRTYrjkOJZaVNpJn_Cb6wyjxmo1wwlDZHbit0OA2nus5Wld0URHaQOQ88XKmWCXi6TNB68Xb1-23jvLZ5ULXVXbWjvkSX63iCfMiezMavEL9PTJ7ZQHrFQ"/>
+</div>
+<div class="p-lg flex flex-col flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px;">menu_book</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">DOCUMENTATION</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Personal Wiki</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1 mb-xl">A decentralized knowledge base for capturing interconnected thoughts and notes.</p>
+<button class="w-full py-sm border border-primary text-primary font-button text-button hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+                                Use this template
+                            </button>
+</div>
+</div>
+<!-- Template Card 3 -->
+<div class="group flex flex-col border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="aspect-video bg-surface-container-low relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A highly structured spreadsheet interface displayed on a sleek digital screen, featuring clean grid lines and numerical data. The aesthetic is ultra-minimalist with a professional blue-tinged gray palette and sharp typography, suggesting a powerful CRM system for enterprise use." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2GwypLR5OZkpmeeXV_O5y15zphOIhjqRDyGR4x1Ay-ltRwBcTiXL1Ype8dgrOi7i813cTUygXhiCEUFGrI7Ol0tbzikPhKO9EpFT3cSOSaoyuh_rm8vJLMuteibjeQSuNIdBdEqYXyaa8dL_XJkAnxc4ePfzfv_-PAHb9aw3z5FuBWcmw4rxD5OUYV2zxVW9K8YJtnwmqWL0qVRXrmZTt4bDlRPjjosiWW2L_pU7PskjSWn45eN6jSA"/>
+</div>
+<div class="p-lg flex flex-col flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px;">groups</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">SALES</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">CRM</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1 mb-xl">End-to-end relationship tracking for small teams and independent consultants.</p>
+<button class="w-full py-sm border border-primary text-primary font-button text-button hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+                                Use this template
+                            </button>
+</div>
+</div>
+<!-- Template Card 4 -->
+<div class="group flex flex-col border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="aspect-video bg-surface-container-low relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A modern collaborative meeting room with glass walls and minimalist furniture. The scene is bright and airy, with soft shadows and a neutral color scheme. The lighting is crisp and cool, illustrating a productive environment for team meetings and project coordination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl2EqcRYEuP9HJP_6R6cGF1-s_ognM4lCVwH1Qwqs1_Zljkd98n_IjRe2K6bfC4E7qWp-NAh7Iqlgj9wnJ5ih5OZuxCYK3BKQyjrPyv1ASBgAeNhYYYugOOoUQ-mAVMzq5mrQPBvY_dXChc-sv_GWDGTMJwOcr9Zt0dHU39EecchEIk9W4p077OdIAzkVMw7afJ2yG7H_LWMYV2ojxsW1rdR_aiBXkH6OG6nLzRQNRTvgzvexGUoIkog"/>
+</div>
+<div class="p-lg flex flex-col flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px;">event</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">MANAGEMENT</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Meeting Minutes</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1 mb-xl">Systematic capture of decisions, action items, and attendee contributions.</p>
+<button class="w-full py-sm border border-primary text-primary font-button text-button hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+                                Use this template
+                            </button>
+</div>
+</div>
+<!-- Template Card 5 -->
+<div class="group flex flex-col border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="aspect-video bg-surface-container-low relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A close-up shot of a minimalist financial report with clean lines and sharp black text on white premium paper. The image is bright and professional, using a very limited color palette to evoke a sense of precision and financial clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCr95nnKE-UxF4u_2a3osgKSJgYlTZjSzyKspdsmS2KC6bUN-aHrvIXrcSayfq1sn6O8XCW6QSMDU1F1jqDbWIUiLGdI5tQAOif9Zz-2-kRfYMhhVXK4iLPpohQvGID1mK8uJQ-mFXJNiQF-AUu3viWPEjBClBpdLz04Moiti6Wz1OGoXCCft1kDVD6-w5RL8QrBOyGHzX-0vKSOeNZpwyoo2iFpmTJ1MokaDHRJ4Au07jU6mE_jSetlw"/>
+</div>
+<div class="p-lg flex flex-col flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px;">account_balance</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">FINANCE</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Invoice Tracker</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1 mb-xl">Centralized ledger for accounts receivable and expense categorization.</p>
+<button class="w-full py-sm border border-primary text-primary font-button text-button hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+                                Use this template
+                            </button>
+</div>
+</div>
+<!-- Template Card 6 -->
+<div class="group flex flex-col border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="aspect-video bg-surface-container-low relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A minimalist content calendar displayed on a large white wall in a creative studio. The design is based on a rigid grid with black markers on a white surface, reflecting a high-end organizational system for marketing and editorial teams." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP_IxSu7gBMz6wpC1Flm-jPIaO_C4FP5QvW4PilJEVSJUzCm0Fiebaj52dfgbMmffuDHqYCNizZND16a9D9BrtHlevb3HNfVj7EBcMOlbJ87ONbUmkBw8HGhAdE--PLrH3Qb16kxt3TujdH_iSRF6Xs1LNBZ5TW8FQ7kjiN3FNbJlwEAMVMgaf9xo-g6LHAMRA7eqm2a_twfGg6sgIBMh59c6EHhi_4Ru1vESZHflQcB1Oqn1gdwWtfA"/>
+</div>
+<div class="p-lg flex flex-col flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px;">campaign</span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">MARKETING</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-md">Editorial Calendar</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1 mb-xl">Multi-channel content planning with automated status pipelines.</p>
+<button class="w-full py-sm border border-primary text-primary font-button text-button hover:bg-primary hover:text-on-primary transition-all active:scale-95">
+                                Use this template
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="p-xl border-t border-outline-variant/30 flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-md">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-surface-container-lowest bg-primary"></div>
+<div class="w-6 h-6 rounded-full border-2 border-surface-container-lowest bg-secondary"></div>
+<div class="w-6 h-6 rounded-full border-2 border-surface-container-lowest bg-outline"></div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">42 more templates available in community repo</span>
+</div>
+<button class="font-label-mono text-label-mono text-primary flex items-center gap-xs hover:underline">
+                    BROWSE GITHUB <span class="material-symbols-outlined" style="font-size: 14px;">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+        // Modal interactivity
+        document.getElementById('modal-container').addEventListener('click', (e) => {
+            if (e.target.id === 'modal-container') {
+                e.target.classList.add('hidden');
+            }
+        });
+
+        // Micro-interactions for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+            button.addEventListener('mouseleave', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

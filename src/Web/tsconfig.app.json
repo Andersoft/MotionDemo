@@ -1,0 +1,18 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "files": ["env.d.ts"],
+  "references": [
+    { "path": "./src/shared/ui" },
+    { "path": "./src/shared/lib" },
+    { "path": "./src/shared/api" },
+    { "path": "./src/modules/workspace" },
+    { "path": "./src/modules/templates" }
+  ],
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo"
+  }
+}

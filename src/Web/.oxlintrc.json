@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "vue", "vitest"],
+  "env": {
+    "browser": true
+  },
+  "categories": {
+    "correctness": "error"
+  },
+  "settings": {
+    "fsd": {
+      "description": "Feature-Sliced Design rules enforced via custom ESLint plugin in eslint.config.ts. Rules: layer-hierarchy, slice-isolation, public-api, import-method, internal-segments. See scripts/eslint-plugin-fsd.ts"
+    }
+  }
+}

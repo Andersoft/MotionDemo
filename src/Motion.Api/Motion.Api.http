@@ -1,0 +1,6 @@
+@Motion.Api_HostAddress = http://localhost:5001
+
+GET {{Motion.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
