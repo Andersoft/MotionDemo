@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { AppButton } from '@/shared/ui'
+import { AppButton } from '@global'
+import type { Template } from '../model/template'
 
-defineProps<{
-  category: string
-  icon: string
-  title: string
-  description: string
-  image: string
-}>()
+defineProps<Template>()
 
 defineEmits<{
   select: []
@@ -26,9 +21,11 @@ defineEmits<{
       </div>
       <h3 class="card-title">{{ title }}</h3>
       <p class="card-desc">{{ description }}</p>
-      <AppButton variant="outline" class="use-btn" @click="$emit('select')">
-        Use this template
-      </AppButton>
+      <div class="use-btn">
+        <AppButton variant="outline" @click="$emit('select')">
+          Use this template
+        </AppButton>
+      </div>
     </div>
   </div>
 </template>
@@ -108,7 +105,7 @@ defineEmits<{
   margin-bottom: var(--space-xl);
 }
 
-.use-btn {
+.use-btn :deep(.app-btn) {
   width: 100%;
 }
 </style>

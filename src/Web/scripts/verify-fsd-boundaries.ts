@@ -122,6 +122,7 @@ for (const [fileRel, imports] of allImports) {
     if (parts[0] === 'modules') {
       const targetModule = parts[1]
       if (targetModule === sourceHome) continue
+      if (targetModule === 'global') continue
       error(`"${fileRel}" imports from different module "${targetModule}" via "${imp.source}"`)
       crossViolations++
     }

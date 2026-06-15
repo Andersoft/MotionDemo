@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { WorkspacePage } from '@/modules/workspace'
+import { WorkspacePage } from '@workspace'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

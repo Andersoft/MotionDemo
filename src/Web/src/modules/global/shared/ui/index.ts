@@ -8,3 +8,6 @@ export { default as AppTable } from './AppTable.vue'
 export { default as AppModal } from './AppModal.vue'
 export { default as AppNavItem } from './AppNavItem.vue'
 export { default as AppPageLayout } from './AppPageLayout.vue'
+
+export type { Column } from './AppTable.vue'
+export type { PageTab } from './AppPageLayout.vue'

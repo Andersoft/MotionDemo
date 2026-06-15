@@ -47,6 +47,7 @@ lint: lint-web lint-api
 
 lint-web:
     cd {{web}} && npm run lint
+    cd {{web}} && npx vue-tsc --noEmit
 
 lint-api:
     dotnet format {{sln}} --verify-no-changes

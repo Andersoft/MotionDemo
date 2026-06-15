@@ -1,36 +1,8 @@
 <script setup lang="ts">
-interface KanbanCard {
-  title: string
-  tags: string[]
-  progress?: number
-}
+import type { KanbanColumn } from '@entities'
+import { getKanbanColumns } from '@entities'
 
-interface KanbanColumn {
-  title: string
-  cards: KanbanCard[]
-}
-
-const columns: KanbanColumn[] = [
-  {
-    title: 'To Do',
-    cards: [
-      { title: 'Accessibility Audit', tags: ['compliance'] },
-      { title: 'Auth Flow v2 Prototype', tags: ['security'] },
-    ],
-  },
-  {
-    title: 'In Progress',
-    cards: [
-      { title: 'API Rust Migration', tags: ['backend'], progress: 65 },
-    ],
-  },
-  {
-    title: 'Done',
-    cards: [
-      { title: 'Design Tokens Setup', tags: ['design-system'] },
-    ],
-  },
-]
+const columns: KanbanColumn[] = getKanbanColumns()
 </script>
 
 <template>

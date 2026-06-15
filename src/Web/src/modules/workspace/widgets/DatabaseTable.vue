@@ -1,15 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { AppBadge, AppButton, AppTable } from '@/shared/ui'
-import type { Column } from '@/shared/ui/AppTable.vue'
-
-interface Row {
-  id: number
-  name: string
-  status: string
-  tags: string[]
-  dueDate: string
-}
+import { AppBadge, AppButton, AppTable } from '@global'
+import type { Column } from '@global'
+import type { Row } from '@entities'
+import { getTaskRows } from '@entities'
 
 const columns: Column[] = [
   { key: 'name', label: 'Name' },
@@ -18,11 +12,7 @@ const columns: Column[] = [
   { key: 'dueDate', label: 'Due Date' },
 ]
 
-const rows = ref<Row[]>([
-  { id: 1, name: 'Core API migration to Rust', status: 'In Progress', tags: ['backend', 'performance'], dueDate: 'Oct 12, 2023' },
-  { id: 2, name: 'Frontend components documentation', status: 'To Do', tags: ['design', 'docs'], dueDate: 'Oct 15, 2023' },
-  { id: 3, name: 'Global state management refactor', status: 'Done', tags: ['frontend'], dueDate: 'Sep 28, 2023' },
-])
+const rows = ref<Row[]>(getTaskRows())
 
 function statusVariant(status: string) {
   if (status === 'In Progress') return 'success'
@@ -47,9 +37,11 @@ function statusVariant(status: string) {
     </template>
 
     <template #footer>
-      <AppButton variant="ghost" class="new-task-btn">
-        + New Task
-      </AppButton>
+      <div class="new-task-btn">
+        <AppButton variant="ghost">
+          + New Task
+        </AppButton>
+      </div>
     </template>
   </AppTable>
 </template>
@@ -83,15 +75,18 @@ function statusVariant(status: string) {
 }
 
 .new-task-btn {
+  border-top: 1px solid var(--outline-variant);
+}
+
+.new-task-btn :deep(.app-btn) {
   width: 100%;
   padding: var(--space-sm) var(--space-xl);
-  border-top: 1px solid var(--outline-variant);
   justify-content: flex-start;
   color: var(--outline);
   border-radius: 0;
 }
 
-.new-task-btn:hover {
+.new-task-btn :deep(.app-btn:hover) {
   color: var(--on-surface-variant);
 }
 </style>

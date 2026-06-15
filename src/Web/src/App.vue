@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, provide } from 'vue'
 import { RouterView } from 'vue-router'
-import { TemplateGalleryModal } from '@/modules/templates'
+import { TemplateGalleryModal } from '@templates'
 
 const showModal = ref(false)
 provide('openTemplateGallery', () => { showModal.value = true })

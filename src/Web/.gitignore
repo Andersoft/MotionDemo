@@ -37,3 +37,8 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# TypeScript declaration emission (composite project references)
+*.d.ts
+*.d.ts.map
+!src/env.d.ts

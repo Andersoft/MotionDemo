@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
+
+withDefaults(defineProps<{
+  title?: string
+  activeNav?: string
+}>(), {
+  title: '',
+  activeNav: 'workspaces',
+})
 </script>
 
 <template>
   <div class="layout">
-    <AppSidebar active-nav="workspaces" />
+    <AppSidebar :active-nav="activeNav" />
     <div class="main-panel">
-      <AppHeader />
+      <AppHeader :title="title" />
       <div class="content">
         <slot />
       </div>

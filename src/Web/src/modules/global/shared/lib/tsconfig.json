@@ -2,8 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "../../../dist/out-tsc/shared/api",
-    "tsBuildInfoFile": "../../../node_modules/.tmp/tsconfig.shared.api.tsbuildinfo"
+    "outDir": "../../../dist/out-tsc/global/lib",
+    "tsBuildInfoFile": "../../../node_modules/.tmp/tsconfig.global.lib.tsbuildinfo",
+    "composite": true
   },
   "include": ["**/*.ts", "**/*.vue"],
   "exclude": ["__tests__"],

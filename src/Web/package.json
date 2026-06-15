@@ -10,7 +10,7 @@
     "test:unit": "vitest",
     "test:module": "npx tsx scripts/verify-fsd-boundaries.ts",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build",
+    "type-check": "vue-tsc --noEmit",
     "lint": "run-s lint:modules lint:*",
     "lint:modules": "npx tsx scripts/verify-fsd-boundaries.ts",
     "lint:oxlint": "oxlint . --fix",

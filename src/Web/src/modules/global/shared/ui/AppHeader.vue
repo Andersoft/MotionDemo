@@ -3,6 +3,12 @@ import { ref } from 'vue'
 import AppInput from './AppInput.vue'
 import AppButton from './AppButton.vue'
 
+withDefaults(defineProps<{
+  title?: string
+}>(), {
+  title: '',
+})
+
 const searchQuery = ref('')
 </script>
 
@@ -11,7 +17,7 @@ const searchQuery = ref('')
     <div class="header-left">
       <div class="title-area">
         <span class="material-symbols-outlined icon">description</span>
-        <span class="title">Workspace Editor</span>
+        <span class="title">{{ title }}</span>
       </div>
       <div class="divider"></div>
       <AppInput v-model="searchQuery" icon="search" placeholder="Search page..." />
