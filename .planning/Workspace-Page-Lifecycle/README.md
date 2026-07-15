@@ -16,14 +16,16 @@ Enable users to create named **Workspaces** (isolated containers for their conte
 
 ## Terminology
 
-| Term | Definition |
-|------|------------|
-| **Workspace** | A top-level container owned by one or more users. Has a name, avatar, and unique slug. Houses all pages. |
-| **Page** | A single content document within a workspace. Has a title, icon, cover image, body (blocks), and path in the page tree. |
-| **Page Tree** | The hierarchical, nestable sidebar representation of all pages in a workspace. Defaults are collapsed/expanded per user preference. |
-| **Workspace Switcher** | UI element in the sidebar footer that lists available workspaces and allows switching. |
-| **Trash** | Soft-delete state for pages. Trashed pages remain recoverable for 30 days before permanent deletion. |
-| **Slug** | URL-safe identifier derived from the workspace name, used in route paths. |
+| Term | Definition | Domain Type |
+|------|------------|-------------|
+| **Workspace** | A top-level container owned by one or more users. Has a name, avatar, and unique slug. Houses all pages. | Aggregate Root — encapsulates creation, rename, and deletion invariants. |
+| **Page** | A single content document within a workspace. Has a title, icon, cover image, body (blocks), and path in the page tree. | Aggregate Root — encapsulates soft-delete, rename, move, and duplicate invariants. |
+| **Page Tree** | The hierarchical, nestable sidebar representation of all pages in a workspace. Defaults are collapsed/expanded per user preference. | Derived projection — computed from the `Page` aggregate, not a separate entity. |
+| **Workspace Switcher** | UI element in the sidebar footer that lists available workspaces and allows switching. | UI component — consumes `Workspace` list via API. |
+| **Trash** | Soft-delete state for pages. Trashed pages remain recoverable for 30 days before permanent deletion. | State tracked via a `PageStatus` enum (`Active | Trashed`) on the `Page` aggregate; enforced on read/write boundaries. |
+| **Slug** | URL-safe identifier derived from the workspace name, used in route paths. | Value Object — encapsulates generation, URL-safe validation, and uniqueness constraints. Never a raw `string`. |
+
+> **Design rule:** Terms marked as "Value Object" or "Aggregate Root" must be modeled as dedicated types — never as raw primitives (`string`, `number`, `boolean`). Terms marked as "UI component" or "Derived projection" may use simple types.
 
 ---
 
@@ -59,6 +61,7 @@ All artifacts live under `.planning/Workspace-Page-Lifecycle/` unless otherwise 
 - Implement from [API-Contract.md](./API-Contract.md) and [Domain-Model.md](./Domain-Model.md) first — they define the service boundary.
 - Run migrations per [Data-Migrations.md](./Data-Migrations.md); do not deviate from the planned schema evolution.
 - Raise an issue if an endpoint's behavior contradicts [User-Flows.md](./User-Flows.md) — the flow document wins.
+- **Domain model discipline:** All Value Objects (`Slug`, `PageIcon`, `CoverImage`, `PagePath`, `PageStatus`) must be dedicated types with encapsulated validation. Do not store or pass them as raw strings/enums. Aggregates (`Workspace`, `Page`) must enforce invariants internally — not rely on callers to check preconditions.
 
 ### Frontend
 - Build UI components per [UI-Component-Tree.md](./UI-Component-Tree.md) and [Visual-Design-Spec.md](./Visual-Design-Spec.md).
@@ -79,6 +82,8 @@ All artifacts live under `.planning/Workspace-Page-Lifecycle/` unless otherwise 
 
 ## Scope Summary
 
+> **Baseline note:** The current codebase contains an early scaffold (a .NET weather-API template and a Vue task-board UI) that predates this planning document. All domain concepts (`Workspace`, `Page`, `Slug`, etc.) defined below are new. The scaffold will be replaced or reworked to match this slice's [Domain-Model.md](./Domain-Model.md). No existing code is exempt from alignment.
+
 ### ✅ In-scope
 
 | Area | Details |
@@ -93,7 +98,7 @@ All artifacts live under `.planning/Workspace-Page-Lifecycle/` unless otherwise 
 | **Sidebar Navigation** | Collapsible sidebar. Active page highlighted. Scrollable page list. |
 | **Error & Empty States** | 404 for missing pages/workspaces. Empty workspace welcome screen. Trash empty state. |
 | **API Endpoints** | RESTful JSON API for all of the above, documented in OpenAPI 3.1. |
-| **Domain Model** | Aggregates: `Workspace` (root), `Page` (root). Value Objects: `Slug`, `PageIcon`, `CoverImage`, `PagePath`. |
+| **Domain Model** | Aggregates: `Workspace` (root), `Page` (root). Value Objects: `Slug`, `PageIcon`, `CoverImage`, `PagePath`, `PageStatus` (enum: `Active | Trashed`). Aggregates must encapsulate their invariants (e.g., a soft-deleted `Page` rejects mutations; a `Workspace` cannot be deleted while it still contains active pages). |
 | **Edge Cases** | Concurrent rename + reorder, deeply nested paths exceeding URL limits, orphan pages on workspace deletion. |
 
 ### ❌ Out-of-scope
@@ -118,9 +123,31 @@ All artifacts live under `.planning/Workspace-Page-Lifecycle/` unless otherwise 
 | **Third-party integrations** | Slack, Google Drive, Figma embeds — deferred to Integrations slice. |
 | **Analytics / Telemetry** | Usage tracking — deferred to Analytics slice. |
 
----
+## Design Quality Principles
 
-## Assumptions & Non-Goals
+All artifacts produced for this slice must adhere to the following principles during review:
+
+### Primitive Obsession — Avoid raw types for domain concepts
+- Every Value Object (`Slug`, `PageIcon`, `CoverImage`, `PagePath`, `PageStatus`) must be a dedicated type (class, branded type, or enum) with encapsulated validation and behavior.
+- Raw strings, numbers, or booleans must not represent concepts that carry business rules (identifier generation, date ranges, lifecycle states).
+- Exception: purely informational data (`firstName`, `description`, `title`) may remain primitives.
+
+### Rich Domain Models — Encapsulate behavior in Aggregates
+- `Workspace` and `Page` as Aggregate Roots must enforce their own invariants internally:
+  - A soft-deleted (`PageStatus.Trashed`) `Page` must reject mutations at the domain level, not just in the UI.
+  - `Workspace` must validate slug uniqueness and prevent deletion while active pages remain.
+- DTOs, ViewModels, API contracts, and simple configuration objects are exempt — they are permitted to be anemic.
+
+### Duplication — Share only the same business concept
+- If two behaviors share the same verb but represent different business concepts, keep them separate.
+- Avoid twin hierarchies (e.g., a `WorkspaceDto` mirroring `Workspace` field-for-field) unless required by architectural boundaries (API vs. Domain vs. Persistence).
+
+### Speculative Generality — Build for now, extend later
+- Interfaces with only one implementation must be justified (testability, DI boundary) or omitted.
+- No "reserved for future use" fields, methods, or types.
+- Pass-through classes that only delegate without adding behavior or architectural value must not be introduced.
+
+---
 
 ### Assumptions
 1. **Single-owner default:** A workspace is created by a single user who is the owner. Multi-owner is deferred.
@@ -152,3 +179,8 @@ Use this checklist during review to confirm the document meets its NFRs:
 - [ ] **Terminology consistent:** All terms in the Terminology section are used consistently throughout the document and match the anticipated domain model.
 - [ ] **Artifacts inventory complete (FR2):** Every planned artifact is listed in the Artifacts Table with document type and description.
 - [ ] **Assumptions documented (FR4):** Assumptions and non-goals are explicit, not implicit.
+- [ ] **No primitive obsession (DQ1):** Every Value Object named in the terminology/domain model is planned as a dedicated type, not a raw primitive.
+- [ ] **No anemic aggregates (DQ2):** `Workspace` and `Page` aggregates include behavioral invariants (e.g., rejection on soft-delete, guard on deletion) in the Domain Model artifact.
+- [ ] **No speculative generality (DQ3):** Every artifact in the table is needed now for this slice — none are "reserved for future."
+- [ ] **Design principles documented (DQ4):** The Design Quality Principles section exists and is linked from each discipline's usage guidance.
+
