@@ -20,7 +20,7 @@ stateDiagram-v2
     Active --> Archived : archive()
     Archived --> Active : restore()
     Archived --> Deleted : delete()
-    Deleted --> Archived : restore() [admin/owner, within grace period]
+    Deleted --> Archived : restoreFromDeleted() [admin/owner, within grace period]
     Deleted --> [*] : expunge() [background job, after grace period]
 
     state Draft {
@@ -168,9 +168,7 @@ stateDiagram-v2
 | T11 | `restoreFromDeleted()` | `Deleted` | `Archived` | Set `status=Archived`. Set `archivedAt` timestamp (re-archive timestamp). Clear `deletedAt` and `expiresAt`. Restore `ContentBlock[]` from append-only revision log (latest revision before deletion). **Cascade:** `PageHierarchyService.cascadeToDescendants(pageId, CascadeOperation.Restore)` — all descendants that were cascade-deleted are restored to Archived (not Active — prevents accidental mass un-archiving). Descendants independently deleted must be restored individually. Touch `AuditInfo`. **Emit:** `PageRestored(pageId, workspaceId, restoredBy)` for this page + one `PageRestored` per restored descendant. | Actor has role ≥ Admin (Admin or Owner). Page is in Deleted state. Current time < `expiresAt` (grace period has not elapsed). | `FORBIDDEN` — insufficient role. `INVALID_STATE` — page is not Deleted. `GRACE_PERIOD_EXPIRED` — grace period has elapsed; page must be recovered through data recovery procedure (out of band). `NOT_FOUND` — page does not exist. |
 | T12 | `expunge()` | `Deleted` | `[*]` | Hard-delete page record and all associated data from database (page row, revision log, event outbox entries already consumed). **No cascade needed** — descendants already deleted and will also be expunged by individual sweep. **No event emitted** — lifecycle is complete. | System background job. Current time >= `expiresAt`. Page is in Deleted state. | `INVALID_STATE` — page is not Deleted (skip). `GRACE_PERIOD_NOT_ELAPSED` — grace period still active (skip and retry later). |
 | T13 | `move(newParent)` | `Archived` | `Archived` | Update `PageParent` to new parent reference. **Note:** Moving an Archived page is permitted (for reorganization before bulk restore). Increment revision version. Touch `AuditInfo`. **Emit:** `PageMoved(pageId, workspaceId, oldParentId, newParentId)`. | Actor has role ≥ Admin. New parent exists, is in same workspace (INV-06), and move does not create a cycle (INV-05). New parent may be Active or Archived. | `FORBIDDEN` — insufficient role (Member cannot move archived pages). `INVALID_PARENT` — parent not found, wrong workspace, or would create cycle. `INVALID_STATE` — page is not Archived. |
-| T14 | `restore()` | `Deleted` | `Archived` | (See T11 — alias for clarity in cross-references.) | | |
 
----
 
 ## 4. Content Operation Permissions by State
 
@@ -211,8 +209,7 @@ stateDiagram-v2
 | `CONFLICT` | 409 | Optimistic concurrency conflict — the page was modified by another session since the client last read it. | Reject. Return current `versionNumber` and `editedAt`. Client should refresh and retry. | "The page was modified by another user. Please reload and try again." |
 | `GRACE_PERIOD_EXPIRED` | 410 | Attempt to restore a Deleted page whose grace period has elapsed. | Reject. Page is queued for expunge (or already expunged). | "The deletion grace period has expired and this page can no longer be restored." |
 | `WORKSPACE_LIMIT_REACHED` | 422 | Workspace has reached its maximum page capacity. | Reject. No state change. | "This workspace has reached its page limit. Remove or archive pages before creating new ones." |
-| `PARENT_NOT_FOUND` | 404 | Parent page specified during creation or move does not exist. | Reject. No state change. | "The selected parent page was not found." |
-| `PARENT_INVALID_WORKSPACE` | 422 | Parent page belongs to a different workspace than the target page (INV-06 violation). | Reject. No state change. | "The parent page must be in the same workspace." |
+
 
 ### 5.1 Failure Mapping Strategy
 
@@ -234,9 +231,7 @@ type PageCommandError =
   | { code: 'CONFIRMATION_REQUIRED'; confirmationToken: string }
   | { code: 'CONFLICT'; currentVersion: number; editedAt: string }
   | { code: 'GRACE_PERIOD_EXPIRED'; deletedAt: string; expiresAt: string }
-  | { code: 'WORKSPACE_LIMIT_REACHED'; limit: number }
-  | { code: 'PARENT_NOT_FOUND' }
-  | { code: 'PARENT_INVALID_WORKSPACE' };
+  | { code: 'WORKSPACE_LIMIT_REACHED'; limit: number };
 ```
 
 This enables:
@@ -256,7 +251,7 @@ This enables:
 | **Active → Draft** | Lifecycle is unidirectional forward. A published page cannot re-enter draft — content changes are tracked via revisions, not state rollback. If unpublishing is desired, use Archive (which is reversible). |
 | **Active → Deleted** | Active pages must be archived first before deletion. This two-step process (Active → Archived → Deleted) provides a safety net — users must explicitly confirm the archive step before reaching the destructive delete action. Prevents accidental permanent deletion of live content. |
 | **Archived → Draft** | Same rationale as Active → Draft. Archived pages can be restored (→ Active) but cannot re-enter draft. |
-| **Deleted → Active** | A deleted page can only be restored to Archived (via T11/T14), not directly to Active. This prevents silent mass- reactivation of deleted content — restoring to Archived requires an explicit second `restore()` call if the user wants the page active again. This two-step recovery reduces accidental cascade restoration. |
+| **Deleted → Active** | A deleted page can only be restored to Archived (via T11), not directly to Active. This prevents silent mass- reactivation of deleted content — restoring to Archived requires an explicit second `restore()` call if the user wants the page active again. This two-step recovery reduces accidental cascade restoration. |
 | **Deleted → Deleted** | No-op. Reject duplicate `delete()` calls. |
 | **Deleted → [*] (via user action)** | Expunge is a system-only operation. Users cannot permanently delete a page within the grace period — only the background sweep job may transition Deleted → [*]. This guarantees the grace period is always honored. |
 | **[Any] → [*] (non-expunge)** | The terminal state `[*]` is only reachable via the `expunge()` system job. No user-facing command may transition to `[*]`. |
@@ -371,7 +366,7 @@ Every concept in this state machine maps to a defined element in [02-domain-mode
 |-----|-------------------------------|
 | **State definitions are deterministic and mutually exclusive.** | The state machine defines four explicit states (Draft, Active, Archived, Deleted). At any point in time, a page occupies exactly one state. The transition matrix in §6.1 provides a complete enumeration of all possible transitions, with illegal transitions explicitly documented and justified. No two states overlap. |
 | **Transition definitions avoid ambiguous guard logic.** | Every transition in §3 specifies exactly: trigger, source state, target state, side effects (with cascade semantics), validation preconditions (with invariant references), and failure codes. Guards are single-condition or clearly composed (e.g., "role ≥ Admin AND grace period not expired"). No implicit or "else" fallthrough logic. |
-| **Failure mapping is suitable for OneOf-style error handling and consistent UI messaging.** | §5 defines a closed discriminated union (`PageCommandError`) with 16 error codes, each carrying structured context data. Every code maps to a deterministic HTTP status, domain condition, system behavior, and user-facing message template. Frontend can switch on `code` for localized rendering without parsing free-form error text. |
+| **Failure mapping is suitable for OneOf-style error handling and consistent UI messaging.** | §5 defines a closed discriminated union (`PageCommandError`) with 15 error codes, each carrying structured context data. Every code maps to a deterministic HTTP status, domain condition, system behavior, and user-facing message template. Frontend can switch on `code` for localized rendering without parsing free-form error text. |
 | **Mermaid diagram renders and remains synchronized with transition table.** | The `stateDiagram-v2` in §1 mirrors the transition table in §3: every arrow in the diagram has a corresponding row in the table. Entry/exit notes in the diagram are expanded in §3 side-effect columns. If the transition table changes, the diagram MUST be updated in the same commit (enforced by code review). |
 
 ---
